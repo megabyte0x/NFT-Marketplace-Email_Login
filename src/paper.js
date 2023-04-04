@@ -3,6 +3,9 @@
  */
 import { PaperEmbeddedWalletSdk } from "@paperxyz/embedded-wallet-service-sdk";
 
+import { UserStatus } from "@paperxyz/embedded-wallet-service-sdk";
+
+
 /**
  * @notice This constant initializes an instance of PaperEmbeddedWalletSdk with the provided configuration.
  */
@@ -18,6 +21,19 @@ export const sdk = new PaperEmbeddedWalletSdk({
 export const socialLogin = async () => {
   try {
     await sdk.auth.loginWithPaperModal();
+    return sdk.getUser();
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+/**
+ * @notice This function initiates the social logout process.
+ * @dev If there is an error during the process, it will be logged to the console.
+*/
+export const socialLogout = async () => {
+  try {
+    await sdk.auth.logout();
   } catch (e) {
     console.log(e);
   }
@@ -39,12 +55,14 @@ export const getUser = async () => {
  */
 export const getSigner = async () => {
   let signer;
-
+  const user = await getUser();
+  if (user.status === UserStatus.LOGGED_OUT) {
+    return;
+  }
   try {
     signer = await getUser().then((user) => {
       return user.wallet.getEthersJsSigner();
     });
-    console.log(signer);
   } catch (e) {
     console.log(e);
   }
