@@ -2,7 +2,9 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 
-import { socialLogin, getUser } from "../paper.js";
+import { socialLogin, socialLogout, getUser } from "../paper.js";
+
+import { UserStatus } from "@paperxyz/embedded-wallet-service-sdk";
 
 /**
  * @notice Navbar component for displaying the navigation menu.
@@ -12,15 +14,14 @@ function Navbar() {
 
   const [connected, toggleConnect] = useState(false);
   const location = useLocation();
-  const [currAddress, updateAddress] = useState('0x');
-  const [currentUser, updateUser] = useState();
+  const [currentAddress, updateAddress] = useState('0x');
+  const [currentUser, updateUser] = useState(null);
 
   /**
    * @notice This function updates the button style when a user is connected.
    */
   function updateButton() {
     const ethereumButton = document.querySelector('.enableEthereumButton');
-    ethereumButton.textContent = "Connected";
     ethereumButton.classList.remove("hover:bg-blue-70");
     ethereumButton.classList.remove("bg-blue-500");
     ethereumButton.classList.add("hover:bg-green-70");
@@ -34,15 +35,41 @@ function Navbar() {
   async function connectWithPaperWallet() {
     try {
       await socialLogin().then((user) => {
-        if (user) {
-          updateUser(user);
-          updateAddress(user.walletAddress);
-          updateButton();
-
+        if (UserStatus.LOGGED_IN_WALLET_INITIALIZED === user.status) {
+          setUser();
         }
       });
     } catch (e) {
       console.log(e);
+    }
+  }
+
+  async function logout() {
+    try {
+      await socialLogout().then(() => {
+        setUser();
+      });
+    } catch (error) {
+      console.log(error);
+    };
+  }
+
+  async function setUser() {
+    try {
+      await getUser().then((user) => {
+        if (user.status === UserStatus.LOGGED_OUT) {
+          toggleConnect(false);
+          updateUser(null);
+          updateAddress('0x');
+          return;
+        }
+        updateUser(user);
+        updateAddress(user.walletAddress);
+        toggleConnect(true);
+        updateButton();
+      })
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -51,13 +78,7 @@ function Navbar() {
    */
   useEffect(() => {
 
-    getUser().then((user) => {
-      if (user) {
-        updateUser(user);
-        updateAddress(user.walletAddress);
-        updateButton();
-      }
-    });
+    setUser();
 
   }, [currentUser]);
 
@@ -103,13 +124,15 @@ function Navbar() {
               }
               <li>
                 <button className="enableEthereumButton bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm" onClick={connectWithPaperWallet}>{connected ? "Connected" : "Connect Wallet"}</button>
+                <br></br>
+                {connected && <button className="enableEthereumButton bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm" onClick={logout}>Logout</button>}
               </li>
             </ul>
           </li>
         </ul>
       </nav>
       <div className='text-white text-bold text-right mr-10 text-sm'>
-        {currAddress !== "0x" ? "Connected to" : "Not Connected. Please login to view NFTs"} {currAddress !== "0x" ? currAddress : ""}
+        {currentAddress !== "0x" ? "Connected to" : "Not Connected. Please login to view NFTs"} {currentAddress !== "0x" ? currentAddress : ""}
       </div>
     </div>
   );
