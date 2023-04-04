@@ -31,7 +31,6 @@ export default function NFTPage(props) {
         const signer = await getSigner();
         const user = await getUser();
 
-        console.log("signer", signer)
         const addr = await user.walletAddress;
         //Pull the deployed contract instance
         let contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer)
@@ -40,7 +39,6 @@ export default function NFTPage(props) {
         const listedToken = await contract.getListedTokenForId(tokenId);
         let meta = await axios.get(tokenURI);
         meta = meta.data;
-        console.log(listedToken);
 
         let item = {
             price: meta.price,
@@ -51,10 +49,8 @@ export default function NFTPage(props) {
             name: meta.name,
             description: meta.description,
         }
-        console.log(item);
         updateData(item);
         updateDataFetched(true);
-        console.log("address", addr)
         updateCurrAddress(addr);
     }
 
