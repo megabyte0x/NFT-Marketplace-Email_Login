@@ -61,13 +61,20 @@ export default function NFTPage(props) {
     async function buyNFT(tokenId) {
         try {
             const signer = await getSigner();
-            //Pull the deployed contract instance
-            let contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer);
-            const salePrice = ethers.utils.parseUnits(data.price, 'ether')
+
             updateMessage("Buying the NFT... Please Wait (Upto 1 min)")
-            //run the executeSale function
-            let transaction = await contract.executeSale(tokenId, { value: salePrice });
-            await transaction.wait();
+
+            const funcInterface = new ethers.utils.Interface(["function executeSale(uint256 tokenId) public"]);
+            const dataToSend = funcInterface.encodeFunctionData("executeSale", [tokenId]);
+
+            let tx = {
+                to: MarketplaceJSON.address,
+                value: ethers.utils.parseEther(data.price),
+                data: dataToSend
+            };
+            const txResponse = await signer.sendTransaction(tx);
+            const txReceipt = await txResponse.wait();
+            console.log("Transaction sent:", txReceipt.transactionHash);
 
             alert('You successfully bought the NFT!');
             updateMessage("");
