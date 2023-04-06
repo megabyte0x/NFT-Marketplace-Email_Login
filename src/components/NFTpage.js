@@ -127,7 +127,7 @@ export default function NFTPage(props) {
                         Description: {data.description}
                     </div>
                     <div>
-                        Price: <span className="">{data.price + " ETH"}</span>
+                        Price: <span className="">{data.price + " Matic"}</span>
                     </div>
                     <div>
                         Owner: <span className="text-sm">{data.owner}</span>
