@@ -8,10 +8,10 @@ import { getSigner } from "../paper.js";
 import Marketplace from '../Marketplace.json';
 
 /**
- * @title SellNFT Component
+ * @title ListNFT Component
  * @notice A React component that allows users to list their NFTs for sale on the marketplace.
  */
-export default function SellNFT() {
+export default function ListNFT() {
     const [formParams, updateFormParams] = useState({ name: '', description: '', price: '' });
     const [fileURL, setFileURL] = useState(null);
     const ethers = require("ethers");

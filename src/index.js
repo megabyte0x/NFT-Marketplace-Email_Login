@@ -1,14 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App.js';
 import reportWebVitals from './reportWebVitals.js';
 import {
   BrowserRouter,
   Routes,
   Route,
 } from "react-router-dom";
-import SellNFT from './components/SellNFT.js';
+import ListNFT from './components/ListNFT.js';
 import Marketplace from './components/Marketplace.js';
 import Profile from './components/Profile.js';
 import NFTPage from './components/NFTpage.js';
@@ -21,7 +20,7 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Marketplace />} />
-        <Route path="/sellNFT" element={<SellNFT />} />
+        <Route path="/listNFT" element={<ListNFT />} />
         <Route path="/nftPage/:tokenId" element={<NFTPage />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
