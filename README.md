@@ -1,11 +1,5 @@
-# Basic NFT Marketplace end to end
+# How to build Reddit's NFT Marketplace using Polygon and Paper 📄
 
-This code is for the Tutorial [Build your own NFT Marketplace from Scratch](https://docs.alchemy.com/alchemy/) built by [alchemy.com](https://alchemy.com)
+Build a Basic Reddit like NFT Marketplace with Social Login and Gasless Transfer of NFT.
 
-To set up the repository and run the marketplace locally, run the below
-```bash
-git clone https://github.com/OMGWINNING/NFT-Marketplace-Tutorial
-cd NFT-Marketplace-Tutorial
-npm install
-npm start
-```
+Check the complete Tutorial Blog here:
